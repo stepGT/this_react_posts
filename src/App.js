@@ -1,6 +1,7 @@
 import React from "react";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
+import MySelect from "./components/UI/select/MySelect";
 
 import "./styles/App.css";
 
@@ -23,9 +24,26 @@ function App() {
     setPosts(posts.filter((item) => item.id !== post.id));
   };
 
+  const [selectedSort, setSelectedSort] = React.useState("");
+
+  const sortPosts = (sort) => {
+    setSelectedSort(sort);
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
+  };
+
   return (
     <div className="App">
       <PostForm create={createPost} />
+      <hr style={{ margin: "15px 0" }} />
+      <MySelect
+        defaultValue="Сортировка"
+        options={[
+          { value: "title", name: "По названию" },
+          { value: "body", name: "По описанию" },
+        ]}
+        value={selectedSort}
+        onChange={sortPosts}
+      />
       {posts.length ? (
         <PostList delete={deletePost} title="Post Backend" posts={posts} />
       ) : (
