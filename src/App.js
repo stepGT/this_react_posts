@@ -15,10 +15,18 @@ function App() {
     setPosts([...posts, newPost]);
   };
 
+  /**
+   * Delete post from state
+   * @param {*} post
+   */
+  const deletePost = (post) => {
+    setPosts(posts.filter((item) => item.id !== post.id));
+  };
+
   return (
     <div className="App">
       <PostForm create={createPost} />
-      <PostList title="Post Backend" posts={posts} />
+      <PostList delete={deletePost} title="Post Backend" posts={posts} />
     </div>
   );
 }
