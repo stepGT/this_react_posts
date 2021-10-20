@@ -2,6 +2,11 @@ import React from "react";
 import Post from "../components/Post";
 
 const PostList = (props) => {
+    if (!props.posts.length) {
+        return (
+            <h1 style={{ textAlign: "center" }}>Post not found!</h1>
+        );
+    }
     return (
         <>
             <h2 style={{ textAlign: "center" }}>
