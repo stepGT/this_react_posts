@@ -1,8 +1,7 @@
 import React from "react";
+import PostFilter from "./components/PostFilter";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
-import MyInput from "./components/UI/input/MyInput";
-import MySelect from "./components/UI/select/MySelect";
 
 import "./styles/App.css";
 
@@ -25,46 +24,27 @@ function App() {
     setPosts(posts.filter((item) => item.id !== post.id));
   };
 
-  const [selectedSort, setSelectedSort] = React.useState("");
-
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [filter, setFilter] = React.useState({ sort: '', query: '' });
 
   const sortedPost = React.useMemo(() => {
-    return selectedSort
+    return filter.sort
       ? [...posts].sort((a, b) =>
-          a[selectedSort].localeCompare(b[selectedSort])
+          a[filter.sort].localeCompare(b[filter.sort])
         )
       : posts;
-  }, [selectedSort, posts]);
+  }, [filter.sort, posts]);
 
   const sortedAndSearchedPosts = React.useMemo(() => {
     return sortedPost.filter((post) =>
-      post.title.toLowerCase().includes(searchQuery)
+      post.title.toLowerCase().includes(filter.query)
     );
-  }, [searchQuery, sortedPost]);
-
-  const sortPosts = (sort) => {
-    setSelectedSort(sort);
-  };
+  }, [filter.query, sortedPost]);
 
   return (
     <div className="App">
       <PostForm create={createPost} />
       <hr style={{ margin: "15px 0" }} />
-      <MyInput
-        placeholder="Search"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-      <MySelect
-        defaultValue="Сортировка"
-        options={[
-          { value: "title", name: "По названию" },
-          { value: "body", name: "По описанию" },
-        ]}
-        value={selectedSort}
-        onChange={sortPosts}
-      />
+      <PostFilter filter={filter} setFilter={setFilter} />
       {sortedAndSearchedPosts.length ? (
         <PostList delete={deletePost} title="Post Backend" posts={sortedAndSearchedPosts} />
       ) : (
