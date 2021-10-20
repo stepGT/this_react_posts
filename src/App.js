@@ -1,6 +1,7 @@
 import React from "react";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
+import MyInput from "./components/UI/input/MyInput";
 import MySelect from "./components/UI/select/MySelect";
 
 import "./styles/App.css";
@@ -26,15 +27,35 @@ function App() {
 
   const [selectedSort, setSelectedSort] = React.useState("");
 
+  const [searchQuery, setSearchQuery] = React.useState("");
+
+  const sortedPost = React.useMemo(() => {
+    return selectedSort
+      ? [...posts].sort((a, b) =>
+          a[selectedSort].localeCompare(b[selectedSort])
+        )
+      : posts;
+  }, [selectedSort, posts]);
+
+  const sortedAndSearchedPosts = React.useMemo(() => {
+    return sortedPost.filter((post) =>
+      post.title.toLowerCase().includes(searchQuery)
+    );
+  }, [searchQuery, sortedPost]);
+
   const sortPosts = (sort) => {
     setSelectedSort(sort);
-    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
   };
 
   return (
     <div className="App">
       <PostForm create={createPost} />
       <hr style={{ margin: "15px 0" }} />
+      <MyInput
+        placeholder="Search"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
       <MySelect
         defaultValue="Сортировка"
         options={[
@@ -44,8 +65,8 @@ function App() {
         value={selectedSort}
         onChange={sortPosts}
       />
-      {posts.length ? (
-        <PostList delete={deletePost} title="Post Backend" posts={posts} />
+      {sortedAndSearchedPosts.length ? (
+        <PostList delete={deletePost} title="Post Backend" posts={sortedAndSearchedPosts} />
       ) : (
         <h1 style={{ textAlign: "center" }}>Post not found!</h1>
       )}
