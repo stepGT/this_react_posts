@@ -4,6 +4,7 @@ import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
 import MyButton from "./components/UI/button/MyButton";
 import MyModal from "./components/UI/modal/MyModal";
+import { usePosts } from "./hooks/usePosts";
 
 import "./styles/App.css";
 
@@ -31,19 +32,7 @@ function App() {
 
   const [filter, setFilter] = React.useState({ sort: '', query: '' });
 
-  const sortedPost = React.useMemo(() => {
-    return filter.sort
-      ? [...posts].sort((a, b) =>
-          a[filter.sort].localeCompare(b[filter.sort])
-        )
-      : posts;
-  }, [filter.sort, posts]);
-
-  const sortedAndSearchedPosts = React.useMemo(() => {
-    return sortedPost.filter((post) =>
-      post.title.toLowerCase().includes(filter.query)
-    );
-  }, [filter.query, sortedPost]);
+  const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
   return (
     <div className="App">
