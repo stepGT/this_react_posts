@@ -5,15 +5,12 @@ import PostList from "./components/PostList";
 import MyButton from "./components/UI/button/MyButton";
 import MyModal from "./components/UI/modal/MyModal";
 import { usePosts } from "./hooks/usePosts";
+import axios from "axios";
 
 import "./styles/App.css";
 
 function App() {
-  const [posts, setPosts] = React.useState([
-    { id: 1, title: "JavaScript", body: "Lorem ipsum dolor" },
-    { id: 2, title: "ReactJS", body: "Lorem ipsum dolor" },
-    { id: 3, title: "Redux", body: "Lorem ipsum dolor" },
-  ]);
+  const [posts, setPosts] = React.useState([]);
 
   const [modal, setModal] = React.useState(false);
 
@@ -21,6 +18,11 @@ function App() {
     setPosts([...posts, newPost]);
     setModal(false);
   };
+
+   const fetchPosts = async () => {
+     const response = await axios.get("https://jsonplaceholder.typicode.com/posts/");
+     setPosts(response.data);
+   };
 
   /**
    * Delete post from state
@@ -36,6 +38,9 @@ function App() {
 
   return (
     <div className="App">
+      <MyButton onClick={fetchPosts}>
+        POSTS
+      </MyButton>
       <MyButton style={{ marginTop: '25px' }} onClick={() => setModal(true)}>
         Create user
       </MyButton>
