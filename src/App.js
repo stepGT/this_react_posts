@@ -36,11 +36,12 @@ function App() {
 
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
+  React.useEffect(() => {
+    fetchPosts();
+  }, []);
+
   return (
     <div className="App">
-      <MyButton onClick={fetchPosts}>
-        POSTS
-      </MyButton>
       <MyButton style={{ marginTop: '25px' }} onClick={() => setModal(true)}>
         Create user
       </MyButton>
