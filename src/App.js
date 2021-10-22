@@ -4,6 +4,7 @@ import PostFilter from "./components/PostFilter";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
 import MyButton from "./components/UI/button/MyButton";
+import Loader from "./components/UI/loader/Loader";
 import MyModal from "./components/UI/modal/MyModal";
 import { usePosts } from "./hooks/usePosts";
 
@@ -13,16 +14,19 @@ function App() {
   const [posts, setPosts] = React.useState([]);
 
   const [modal, setModal] = React.useState(false);
+  const [isPostsLoading, setIsPostsLoading] = React.useState(false);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
     setModal(false);
   };
 
-   const fetchPosts = async () => {
-     const posts = await PostService.getAll();
-     setPosts(posts);
-   };
+  const fetchPosts = async () => {
+    setIsPostsLoading(true);
+    const posts = await PostService.getAll();
+    setPosts(posts);
+    setIsPostsLoading(false);
+  };
 
   /**
    * Delete post from state
@@ -50,7 +54,15 @@ function App() {
       </MyModal>
       <hr style={{ margin: "15px 0" }} />
       <PostFilter filter={filter} setFilter={setFilter} />
-      <PostList delete={deletePost} title="Post Backend" posts={sortedAndSearchedPosts} />
+      {isPostsLoading ? (
+        <Loader />
+      ) : (
+        <PostList
+          delete={deletePost}
+          title="Post Backend"
+          posts={sortedAndSearchedPosts}
+        />
+      )}
     </div>
   );
 }
