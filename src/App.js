@@ -14,6 +14,9 @@ import "./styles/App.css";
 function App() {
   const [posts, setPosts] = React.useState([]);
 
+  const [totalCount, setTotalCount] = React.useState(0);
+  const [limit, setLimit] = React.useState(10);
+  const [page, setPage] = React.useState(1);
   const [modal, setModal] = React.useState(false);
 
   const createPost = (newPost) => {
@@ -34,8 +37,9 @@ function App() {
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
   const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
-    const posts = await PostService.getAll();
-    setPosts(posts);
+    const response = await PostService.getAll(limit, page);
+    setPosts(response.data);
+    setTotalCount(response.headers['x-total-count']);
   });
 
   React.useEffect(() => {
