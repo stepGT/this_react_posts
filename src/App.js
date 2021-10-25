@@ -8,13 +8,14 @@ import Loader from "./components/UI/loader/Loader";
 import MyModal from "./components/UI/modal/MyModal";
 import { useFetching } from "./hooks/useFetching";
 import { usePosts } from "./hooks/usePosts";
+import {getPagesArray, getPagesCount} from './utils/pages';
 
 import "./styles/App.css";
 
 function App() {
   const [posts, setPosts] = React.useState([]);
 
-  const [totalCount, setTotalCount] = React.useState(0);
+  const [totalPages, setTotalPages] = React.useState(0);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [modal, setModal] = React.useState(false);
@@ -39,12 +40,19 @@ function App() {
   const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
     const response = await PostService.getAll(limit, page);
     setPosts(response.data);
-    setTotalCount(response.headers['x-total-count']);
+    const totalCount = response.headers['x-total-count'];
+    setTotalPages(getPagesCount(totalCount, limit));
   });
 
   React.useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [page]);
+
+  let pagesArr = getPagesArray(totalPages);
+
+  const changePage = page => {
+    setPage(page);
+  }
 
   return (
     <div className="App">
@@ -68,6 +76,16 @@ function App() {
           posts={sortedAndSearchedPosts}
         />
       )}
+      <div className="page__wrapper">
+        {pagesArr.map(p => (
+          <span
+            onClick={() => changePage(p)}
+            key={p}
+            className={page === p ? 'page page__current' : 'page'}>
+            {p}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
