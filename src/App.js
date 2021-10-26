@@ -5,10 +5,11 @@ import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
 import MyButton from "./components/UI/button/MyButton";
 import Loader from "./components/UI/loader/Loader";
+import Pagination from "./components/UI/pagination/Pagination";
 import MyModal from "./components/UI/modal/MyModal";
 import { useFetching } from "./hooks/useFetching";
 import { usePosts } from "./hooks/usePosts";
-import {getPagesArray, getPagesCount} from './utils/pages';
+import {getPagesCount} from './utils/pages';
 
 import "./styles/App.css";
 
@@ -48,8 +49,6 @@ function App() {
     fetchPosts();
   }, [page]);
 
-  let pagesArr = getPagesArray(totalPages);
-
   const changePage = page => {
     setPage(page);
   }
@@ -76,16 +75,11 @@ function App() {
           posts={sortedAndSearchedPosts}
         />
       )}
-      <div className="page__wrapper">
-        {pagesArr.map(p => (
-          <span
-            onClick={() => changePage(p)}
-            key={p}
-            className={page === p ? 'page page__current' : 'page'}>
-            {p}
-          </span>
-        ))}
-      </div>
+      <Pagination
+        changePage={changePage}
+        totalPages={totalPages}
+        page={page}
+      />
     </div>
   );
 }
