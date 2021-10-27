@@ -6,17 +6,20 @@ import { AuthContext } from "./context";
 
 function App() {
   const [isAuth, setIsAuth] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     if (localStorage.getItem("auth")) {
       setIsAuth(true);
     }
+    setIsLoading(false)
   }, []);
 
   return (
     <AuthContext.Provider value={{
       isAuth,
-      setIsAuth
+      setIsAuth,
+      isLoading
     }}>
       <BrowserRouter>
         <Navbar />
